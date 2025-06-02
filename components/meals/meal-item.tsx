@@ -4,7 +4,7 @@ import Image from 'next/image';
 import classes from './meal-item.module.css';
 
 export type MealItemProps = {
-    id: string;
+    id: number;
   title: string;
   slug: string;
   image: string;
