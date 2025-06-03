@@ -17,7 +17,7 @@ export async function getMeals(): Promise<MealItemProps[]> {
     //  get for single row of data; run for inserting data
 }
 
-export function getMeal(slug: MealItemProps){
+export function getMeal(slug: string): MealItemProps | null {
 
     return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug) as MealItemProps;
     // get for fetching single row of data
