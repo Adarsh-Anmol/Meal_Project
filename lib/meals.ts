@@ -16,3 +16,12 @@ export async function getMeals(): Promise<MealItemProps[]> {
     //all for fetching all rows of data;
     //  get for single row of data; run for inserting data
 }
+
+export function getMeal(slug: MealItemProps){
+
+    return db.prepare('SELECT * FROM meals WHERE slug = ?').get(slug) as MealItemProps;
+    // get for fetching single row of data
+    //should always use dynamic values as simply putting +slug after the '' 
+    // will lead to SQL injection attacks
+
+}
