@@ -4,8 +4,9 @@ import { MealItemProps } from "@/components/meals/meal-item";
 import slugify from "slugify";
 import xss from "xss";
 import { ShareMealItem } from '@/components/meals/share-meal-item'; 
-import fs from 'node:fs';
-
+import { promises as fsPromises } from 'fs';
+import {join} from 'path';
+import { promises } from 'node:dns';
 
 const db = sql('meals.db');
 
@@ -35,21 +36,57 @@ export function getMeal(slug: string): MealItemProps | null {
 //function to save the meals uploaded by the user
 
 
-export async function saveMeal(meal: ShareMealItem){
+export async function saveMeal(meal: ShareMealItem): Promise<void>{
+    try{
+    //slugify and sanitise the inputs
     meal.slug = slugify(meal.title, {lower:true});
     meal.instructions = xss(meal.instructions);
 
-    const extension = meal.image.name.split('.').pop() //gives the file extension
-    const fileName = `${meal.slug}.${extension}`
+    // Check if image is a File object before processing
+    if (!(meal.image instanceof File)) {
+      throw new Error('Expected a File object for meal.image');
+    }
 
-    const stream =fs.createWriteStream(`@/public/images/${fileName}`);
+    //check for the file extension
+    const extension = meal.image.name.split('.').pop()
+    if (!extension) {
+      throw new Error('Invalid file extension');
+    }
+    
+    //this is the way to rename uploaded file in Typescript
+    const initialFileName = `${meal.slug}.${extension}`;
+    const initialPath = join(process.cwd(), 'public', 'images', initialFileName);
+    const newFileName = `meal-${meal.slug}-${Date.now()}.${extension}`; 
+    // Unique name with timestamp
+    const newPath = join(process.cwd(), 'public', 'images', newFileName);
+
+    //save the image file
     const bufferedImage= await meal.image.arrayBuffer();
+    const stream = fsPromises.writeFile(initialPath, Buffer.from(bufferedImage));
+    await stream; // Wait for the write operation to complete
 
-    stream.write(Buffer.from(bufferedImage), (error) => {
-        if (error){
-            throw new Error('Saving image failed!!');
-        }
-    });
-        
+    // Rename the file after saving
+    await fsPromises.rename(initialPath, newPath);
 
+    // Store the new path in the meal object for database storage
+    meal.image = `/images/${newFileName}`;
+    } catch (error) {
+    // Handle errors during file saving or renaming
+    console.error('Error in saveMeal:', error instanceof Error ? error.message : error);
+    throw new Error('Failed to save or rename meal image');
+  }
+
+  db.prepare(`
+    INSERT INTO meals
+    (title, summary, instructions, creator, creator_email, image, slug)
+    VALUES(
+    @title,
+    @summary,
+    @instructions,
+    @creator,
+    @creator_email,
+    @image,
+    @slug
+    )
+    `).run(meal)
 }
