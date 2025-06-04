@@ -1,6 +1,8 @@
 'use server'
 
-async function shareMeal(formData: FormData) {
+
+
+export async function shareMeal(formData: FormData) {
     'use server'; // This function will be executed on the server side. This is called a server action.
 
     const meal ={
@@ -12,5 +14,5 @@ async function shareMeal(formData: FormData) {
       creator_email: formData.get('email'),
     }
 
-    console.log('Meal shared:', meal);
+    console.log(meal);
   }
