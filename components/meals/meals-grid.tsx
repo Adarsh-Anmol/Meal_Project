@@ -1,4 +1,3 @@
-import { ReactNode } from "react";
 import classes from "./meals-grid.module.css";
 import MealItem from "./meal-item";
 import { MealItemProps } from "./meal-item";

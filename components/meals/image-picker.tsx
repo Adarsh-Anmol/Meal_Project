@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import classes from './image-picker.module.css';
 import Image from 'next/image';
 
-export default function ImagePicker({label, name}: {label?: string, name?: string}) {
+export default function ImagePicker({label, name}:{label: string, name: string}) {
     // putting ? in front makes the input optional, so that initially when no label or name is provided, it will not throw an error
 
     const [pickedImage, setPickedImage] = useState<string | null>();
@@ -13,6 +13,7 @@ export default function ImagePicker({label, name}: {label?: string, name?: strin
     function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
         const file = event.target.files?.[0]; //get the first file from the input, if it exists
         if (!file) {
+            setPickedImage(null); //if no file is selected, set the pickedImage state to null
             return; //if no file is selected, return    
         }
 
@@ -41,10 +42,11 @@ export default function ImagePicker({label, name}: {label?: string, name?: strin
                 className={classes.input}
                 type="file"
                 id={name}
-                accept="image/png, image/jpeg, image/gif"
+                accept="image/png, image/jpeg"
                 name={name}
                 ref={ImageInput}
                 onChange={handleImageChange}
+                required //required is used to make the input mandatory, so that the user has to select an image before submitting the form
                 />
                 
             </div>
