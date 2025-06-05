@@ -33,8 +33,8 @@ export function getMeal(slug: string): MealItemProps | null {
 
 }
 
-//function to save the meals uploaded by the user
 
+//function to save the meals uploaded by the user
 
 export async function saveMeal(meal: ShareMealItem): Promise<void>{
     try{

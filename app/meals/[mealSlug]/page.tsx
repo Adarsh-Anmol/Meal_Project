@@ -3,9 +3,11 @@ import Image from 'next/image';
 import { getMeal } from '@/lib/meals';
 import { notFound } from 'next/navigation';
 
-export default function MealDetailsPage({params}: {params: {mealSlug: string}}) {
+export default async function MealDetailsPage({params}: {params: {mealSlug: string}}) {
   //params is an object that contains the dynamic segments of the URL
-  const meal= getMeal(params.mealSlug)
+  const meal= getMeal(await params.mealSlug) 
+  //async and await used here as params prop is now asynchronous, thus was showing error
+  //due to direct access
 
   if(!meal){
     notFound(); //if meal is not found, call the notFound component

@@ -12,13 +12,19 @@ export async function shareMeal(formData: FormData): Promise<void> {
   const creator = formData.get('name');
   const creator_email = formData.get('email');
 
+  function isInvalidText(text : string){
+    return !text || text.trim() === '';
+  }
+  //type-checking the data
   if (
-    typeof title !== 'string' ||
-    typeof summary !== 'string' ||
-    typeof instructions !== 'string' ||
+    typeof title !== 'string' || isInvalidText(title) ||
+    typeof summary !== 'string' || isInvalidText(summary)||
+    typeof instructions !== 'string' || isInvalidText(instructions) ||
     !(image instanceof File) ||
-    typeof creator !== 'string' ||
-    typeof creator_email !== 'string'
+    !image || image.size === 0 ||
+    typeof creator !== 'string' || isInvalidText(creator) ||
+    typeof creator_email !== 'string'|| isInvalidText(creator_email) || 
+    creator_email.includes('@')
   ) {
     throw new Error('Invalid form data: all fields must be provided and image must be a file');
   }
