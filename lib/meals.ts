@@ -6,7 +6,6 @@ import xss from "xss";
 import { ShareMealItem } from '@/components/meals/share-meal-item'; 
 import { promises as fsPromises } from 'fs';
 import {join} from 'path';
-import { promises } from 'node:dns';
 
 const db = sql('meals.db');
 

@@ -4,7 +4,12 @@ import { saveMeal } from "./meals";
 import { ShareMealItem } from "@/components/meals/share-meal-item";
 import { redirect } from "next/navigation";
 
-export async function shareMeal(formData: FormData): Promise<void> {
+export interface form_State{
+  message : string| null;
+}
+
+export async function shareMeal(prevState: form_State,formData: FormData): Promise<form_State> { //return object
+  
   const title = formData.get('title');
   const summary = formData.get('summary');
   const instructions = formData.get('instructions');
@@ -26,7 +31,10 @@ export async function shareMeal(formData: FormData): Promise<void> {
     typeof creator_email !== 'string'|| isInvalidText(creator_email) || 
     creator_email.includes('@')
   ) {
-    throw new Error('Invalid form data: all fields must be provided and image must be a file');
+    //throw new Error('Invalid form data: all fields must be provided and image must be a file');
+    return {
+      message: 'Invalid Input' 
+    }
   }
 
   const meal: ShareMealItem = {

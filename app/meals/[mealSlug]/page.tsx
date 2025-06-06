@@ -3,9 +3,10 @@ import Image from 'next/image';
 import { getMeal } from '@/lib/meals';
 import { notFound } from 'next/navigation';
 
-export default async function MealDetailsPage({params}: {params: {mealSlug: string}}) {
+export default async function MealDetailsPage({params}: {params: Promise<{ mealSlug: string }>}){
   //params is an object that contains the dynamic segments of the URL
-  const meal= getMeal(await params.mealSlug) 
+  const mealName= await params; //this is to take out mealSlug from Promise
+  const meal = await getMeal(mealName.mealSlug);//after that, we can use it 
   //async and await used here as params prop is now asynchronous, thus was showing error
   //due to direct access
 
