@@ -2,6 +2,7 @@
 
 import { saveMeal } from "./meals";
 import { ShareMealItem } from "@/components/meals/share-meal-item";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 export interface form_State{
@@ -29,7 +30,7 @@ export async function shareMeal(prevState: form_State,formData: FormData): Promi
     !image || image.size === 0 ||
     typeof creator !== 'string' || isInvalidText(creator) ||
     typeof creator_email !== 'string'|| isInvalidText(creator_email) || 
-    creator_email.includes('@')
+    !creator_email.includes('@')
   ) {
     //throw new Error('Invalid form data: all fields must be provided and image must be a file');
     return {
@@ -47,5 +48,6 @@ export async function shareMeal(prevState: form_State,formData: FormData): Promi
   };
 
     await saveMeal(meal);
+    revalidatePath('/meals');
     redirect('/meals')
   }
