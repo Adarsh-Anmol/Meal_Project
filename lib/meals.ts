@@ -6,6 +6,22 @@ import xss from "xss";
 import { ShareMealItem } from '@/components/meals/share-meal-item'; 
 import { promises as fsPromises } from 'fs';
 import {join} from 'path';
+import {
+  S3Client,
+  ListBucketsCommand,
+  ListObjectsV2Command,
+  GetObjectCommand,
+  PutObjectCommand,
+} from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+
+
+const S3 = new S3Client({
+  region: "auto"
+});
+
+
+
 
 const db = sql('meals.db');
 
@@ -64,11 +80,22 @@ export async function saveMeal(meal: ShareMealItem): Promise<void>{
     const stream = fsPromises.writeFile(initialPath, Buffer.from(bufferedImage));
     await stream; // Wait for the write operation to complete
 
+  await getSignedUrl(
+    S3,
+    new PutObjectCommand({ 
+      Bucket: "my-bucket-https://pub-a419ff2525834eb4bdd889e2a1e64999.r2.dev", 
+      Key: newFileName,
+      Body: Buffer.from(bufferedImage),
+      ContentType: meal.image.type
+      }),
+    { expiresIn: 3600 },
+  )
+
     // Rename the file after saving
     await fsPromises.rename(initialPath, newPath);
 
     // Store the new path in the meal object for database storage
-    meal.image = `/images/${newFileName}`;
+    meal.image = newFileName ;
     } catch (error) {
     // Handle errors during file saving or renaming
     console.error('Error in saveMeal:', error instanceof Error ? error.message : error);

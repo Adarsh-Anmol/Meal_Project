@@ -19,7 +19,7 @@ export default function MealItem({ title, slug, image, summary, creator }: MealI
     <article className={classes.meal}>
       <header>
         <div className={classes.image}>
-          <Image src={image} alt={title} fill />
+          <Image src={`https://pub-a419ff2525834eb4bdd889e2a1e64999.r2.dev/${image}`} alt={title} fill />
         </div>
         <div className={classes.headerText}>
           <h2>{title}</h2>
