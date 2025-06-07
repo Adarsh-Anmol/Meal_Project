@@ -19,7 +19,7 @@ export default async function MealDetailsPage({params}: {params: Promise<{ mealS
     <>
     <header className={classes.header}>
       <div className={classes.image}>
-        <Image src={`https://mealsimg.adarshanmol.com/${meal!.image}`} alt={meal!.title} fill />
+        <Image src={`https://pub-a419ff2525834eb4bdd889e2a1e64999.r2.dev/${meal!.image}`} alt={meal!.title} fill />
         </div>
         <div className={classes.headerText}>
           <h1>{meal?.title}</h1>

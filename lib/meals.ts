@@ -75,7 +75,7 @@ export async function saveMeal(meal: ShareMealItem): Promise<void>{
   await getSignedUrl(
     S3,
     new PutObjectCommand({ 
-      Bucket: "mealsimg.adarshanmol.com", 
+      Bucket: "pub-a419ff2525834eb4bdd889e2a1e64999.r2.dev", 
       Key: newFileName,
       Body: Buffer.from(bufferedImage),
       ContentType: meal.image.type
