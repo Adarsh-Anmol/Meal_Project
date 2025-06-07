@@ -9,6 +9,11 @@ async function Meals(){
 
     return <MealsGrid meals= {meals}/>
 }
+
+export const metadata={
+    title: 'All Meals',
+    description : 'Browse all the meals!!'
+}
 // async component so that only this part of the page will be loaded, other parts will be visible 
 
 export default function MealsPage() {

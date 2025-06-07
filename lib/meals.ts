@@ -6,13 +6,7 @@ import xss from "xss";
 import { ShareMealItem } from '@/components/meals/share-meal-item'; 
 import { promises as fsPromises } from 'fs';
 import {join} from 'path';
-import {
-  S3Client,
-  ListBucketsCommand,
-  ListObjectsV2Command,
-  GetObjectCommand,
-  PutObjectCommand,
-} from "@aws-sdk/client-s3";
+import {S3Client, PutObjectCommand} from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
@@ -21,13 +15,11 @@ const S3 = new S3Client({
 });
 
 
-
-
 const db = sql('meals.db');
 
 //function to fetch all the meals from dummy database and show in mealsgrid
 export async function getMeals(): Promise<MealItemProps[]> {
-    await new Promise ((resolve) => setTimeout(resolve, 2000));
+    //await new Promise ((resolve) => setTimeout(resolve, 2000));
      // Simulating a delay for async operation
 
     //throw new Error('Database connection failed');
@@ -73,7 +65,7 @@ export async function saveMeal(meal: ShareMealItem): Promise<void>{
     const initialPath = join(process.cwd(), 'public', 'images', initialFileName);
     const newFileName = `meal-${meal.slug}-${Date.now()}.${extension}`; 
     // Unique name with timestamp
-    const newPath = join(process.cwd(), 'public', 'images', newFileName);
+    //const newPath = join(process.cwd(), 'public', 'images', newFileName);
 
     //save the image file
     const bufferedImage= await meal.image.arrayBuffer();
@@ -83,7 +75,7 @@ export async function saveMeal(meal: ShareMealItem): Promise<void>{
   await getSignedUrl(
     S3,
     new PutObjectCommand({ 
-      Bucket: "my-bucket-https://pub-a419ff2525834eb4bdd889e2a1e64999.r2.dev", 
+      Bucket: "mealsimg.adarshanmol.com", 
       Key: newFileName,
       Body: Buffer.from(bufferedImage),
       ContentType: meal.image.type
@@ -92,7 +84,7 @@ export async function saveMeal(meal: ShareMealItem): Promise<void>{
   )
 
     // Rename the file after saving
-    await fsPromises.rename(initialPath, newPath);
+    //await fsPromises.rename(initialPath, newPath);
 
     // Store the new path in the meal object for database storage
     meal.image = newFileName ;
